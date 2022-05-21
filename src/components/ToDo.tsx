@@ -8,12 +8,22 @@ function ToDo({ text,category,id }:IToDo) {
         const { currentTarget : {name} , } = e;
         setToDos(oldToDos => {
             const targetIdx = oldToDos.findIndex(toDo => toDo.id === id)
-            const oldToDo = oldToDos[targetIdx];
+            
             const newToDo = {text,id,category:name as any}
             return [
                 ...oldToDos.slice(0,targetIdx),
                  newToDo, 
                  ...oldToDos.slice(targetIdx+1)]
+        })
+    }
+    const onDelete = (e:React.MouseEvent<HTMLButtonElement>) => {
+        setToDos(oldToDos => {
+            const targetIdx = oldToDos.findIndex(toDo => toDo.id === id)
+            const removeToDo = oldToDos[targetIdx];
+            localStorage.removeItem(removeToDo as any);
+            return [
+                ...oldToDos.slice(0,targetIdx),
+                ...oldToDos.slice(targetIdx+1)]
         })
     }
     return (
@@ -22,6 +32,7 @@ function ToDo({ text,category,id }:IToDo) {
             { category !==Categories.DOING && <button name={Categories.DOING } onClick={onClick}>Doing</button>}
             { category !==Categories.DONE && <button name={Categories.DONE } onClick={onClick}>Done</button>}
             { category !==Categories.TO_DO && <button name={Categories.TO_DO} onClick={onClick}>TO_DO</button>}
+            <button onClick={onDelete}>Delete</button>
         </li>
     )
 }
